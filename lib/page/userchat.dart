@@ -292,6 +292,7 @@ class _UserChatState extends State<UserChat> {
                                 chatdata.add(a);
                               }).toList();
                               // print(chatdata);
+                              currentDate="";//for new message appear it will maintain it self
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [

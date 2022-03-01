@@ -117,10 +117,10 @@ class _MyAppBarState extends State<MyAppBar> {
                 top: 16,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       // width: 130,
                       height: 28,
@@ -161,17 +161,17 @@ class _MyAppBarState extends State<MyAppBar> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 240,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showBox();
-                    },
-                    child: Icon(
-                      Icons.menu_open_rounded,
-                      color: Colors.white,
-                      size: 28,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: InkWell(
+                      onTap: () {
+                        showBox();
+                      },
+                      child: Icon(
+                        Icons.menu_open_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     ),
                   )
                 ],
@@ -180,7 +180,7 @@ class _MyAppBarState extends State<MyAppBar> {
             Padding(
               padding: const EdgeInsets.only(top: 32),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
                     width: 90,
@@ -198,27 +198,24 @@ class _MyAppBarState extends State<MyAppBar> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: AnimatedContainer(
-                      duration: Duration(seconds: 1),
-                      width: 90,
-                      height: 25,
-                      decoration: BoxDecoration(
-                          color: click
-                              ? Colors.white
-                              : Color.fromARGB(255, 36, 58, 92),
-                          borderRadius: BorderRadius.circular(35)),
-                      child: Center(
-                        child: Text(
-                          "STATUS",
-                          style: TextStyle(
-                              color: click
-                                  ? Colors.black
-                                  : Color.fromARGB(255, 233, 233, 233),
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 2),
-                        ),
+                  AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    width: 90,
+                    height: 25,
+                    decoration: BoxDecoration(
+                        color: click
+                            ? Colors.white
+                            : Color.fromARGB(255, 36, 58, 92),
+                        borderRadius: BorderRadius.circular(35)),
+                    child: Center(
+                      child: Text(
+                        "STATUS",
+                        style: TextStyle(
+                            color: click
+                                ? Colors.black
+                                : Color.fromARGB(255, 233, 233, 233),
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 2),
                       ),
                     ),
                   ),
