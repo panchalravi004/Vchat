@@ -42,6 +42,7 @@ class _MyAppBarState extends State<MyAppBar> {
       user.signOut();
       prefInit();
       Navigator.of(context).pop();
+      Navigator.of(context).pop();
       Navigator.of(context).pushReplacementNamed(MyRoutes.loginroutes);
     } catch (e) {
       print(e);
