@@ -187,7 +187,14 @@ class _UserChatState extends State<UserChat> {
       }
     }
   }
-
+//show time on message
+  showMsgTime(String time){
+    String t = ""; //this is time
+    for (var i = 11; i < 16; i++) {
+      t = t + time[i];
+    }
+    return t;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -322,25 +329,37 @@ class _UserChatState extends State<UserChat> {
                                                     ? MainAxisAlignment.end
                                                     : MainAxisAlignment.start,
                                                 children: [
-                                                  Container(
-                                                    decoration: (chatdata[i]
-                                                                ['sender'] ==
-                                                            user!.uid
-                                                                .toString())
-                                                        ? userChatDec()
-                                                        : friendChatDec(),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        chatdata[i]['msg'],
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                  Column(
+                                                    crossAxisAlignment: (chatdata[i]
+                                                            ['sender'] ==
+                                                        user!.uid.toString())
+                                                    ? CrossAxisAlignment.end
+                                                    : CrossAxisAlignment.start,
+                                                    
+                                                    children: [
+                                                      Container(
+                                                        decoration: (chatdata[i]
+                                                                    ['sender'] ==
+                                                                user!.uid
+                                                                    .toString())
+                                                            ? userChatDec()
+                                                            : friendChatDec(),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets.all(
+                                                                  8.0),
+                                                          child: Text(
+                                                            chatdata[i]['msg'],
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.white),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
+                                                       Text(showMsgTime(chatdata[i]['time']),style: TextStyle(backgroundColor: Colors.white,color: Color.fromARGB(255, 158, 158, 158)))
+                                                    ],
                                                   ),
+                                                  
                                                 ],
                                               ),
                                             ),
