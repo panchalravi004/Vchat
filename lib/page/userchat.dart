@@ -206,26 +206,77 @@ class _UserChatState extends State<UserChat> {
         .where('receiver', isEqualTo: user!.uid)
         .where('seen', isEqualTo: 'false')
         .get()
-        .then((value) {
-      final List seendata = [];
-      value.docs.map((DocumentSnapshot document) {
-        Map a = document.data() as Map<String, dynamic>;
-        seendata.add(a);
-      }).toList();
-      setState(() {
-        for (var i = 0; i < seendata.length; i++) {
-          FirebaseFirestore.instance
-              .collection("chatroom")
-              .doc(seendata[i]['time'])
-              .update({'seen': 'true'});
-        }
-      });
-      // print(seendata);
+        .then((value) async {
+      for (DocumentSnapshot ds in value.docs) {
+        await ds.reference.update({'seen': 'true'});
+        // print(ds.reference);
+        // print("all true");
+      }
     });
-    // .update({'seen': 'true'});
+    // await FirebaseFirestore.instance
+    //     .collection("chatroom")
+    //     .where('sender', isEqualTo: widget.frienduid)
+    //     .where('receiver', isEqualTo: user!.uid)
+    //     .where('seen', isEqualTo: 'false')
+    //     .get()
+    //     .then((value) {
+    //   final List seendata = [];
+    //   value.docs.map((DocumentSnapshot document) {
+    //     Map a = document.data() as Map<String, dynamic>;
+    //     seendata.add(a);
+    //   }).toList();
+    //   setState(() {
+    //     for (var i = 0; i < seendata.length; i++) {
+    //       FirebaseFirestore.instance
+    //           .collection("chatroom")
+    //           .doc(seendata[i]['time'])
+    //           .update({'seen': 'true'});
+    //     }
+    //   });
+    //   // print(seendata);
+    // });
   }
-//clear chat
-//delete user
+
+//clear chat from both side
+  Future<void> clearChat() async {
+    await FirebaseFirestore.instance
+        .collection("chatroom")
+        .where('sender', isEqualTo: widget.frienduid)
+        .where('receiver', isEqualTo: user!.uid)
+        .get()
+        .then((value) async {
+      for (DocumentSnapshot ds in value.docs) {
+        await ds.reference.delete();
+        // print(ds.reference);
+        print("done");
+      }
+    });
+    await FirebaseFirestore.instance
+        .collection("chatroom")
+        .where('receiver', isEqualTo: widget.frienduid)
+        .where('sender', isEqualTo: user!.uid)
+        .get()
+        .then((value) async {
+      for (DocumentSnapshot ds in value.docs) {
+        await ds.reference.delete();
+        // print(ds.reference);
+        print("done");
+      }
+    });
+  }
+
+//delete user from our list
+  Future<void> deleteUser() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .collection("friend")
+        .doc(widget.frienduid)
+        .delete();
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+  }
+
 //menu
   final RelativeRect position = RelativeRect.fromLTRB(1, 0, 0, 0);
   Future<dynamic> showBox() {
@@ -233,7 +284,11 @@ class _UserChatState extends State<UserChat> {
       PopupMenuItem<int>(
           value: 0,
           child: ListTile(
-            onTap: () {},
+            onTap: () {
+              setState(() {
+                clearChat();
+              });
+            },
             minLeadingWidth: 0,
             trailing: Icon(CupertinoIcons.chat_bubble_text),
             leading: Text("Clear"),
@@ -241,7 +296,12 @@ class _UserChatState extends State<UserChat> {
       PopupMenuItem<int>(
           value: 1,
           child: ListTile(
-            onTap: () {},
+            onTap: () {
+              setState(() {
+                clearChat();
+                deleteUser();
+              });
+            },
             minLeadingWidth: 0,
             trailing: Icon(Icons.delete),
             leading: Text("Delete"),
