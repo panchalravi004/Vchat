@@ -74,9 +74,10 @@ class _UserChatState extends State<UserChat> {
           .collection("friend")
           .doc(user!.uid)
           .update({'time': time});
-      //send message to friend 
+      //send message to friend
       FirebaseFirestore.instance.collection("chatroom").doc(time).set({
         'time': time,
+        'seen': "false",
         'sender': user!.uid.toString(),
         'receiver': widget.frienduid,
         'msg': msg,
@@ -187,14 +188,49 @@ class _UserChatState extends State<UserChat> {
       }
     }
   }
+
 //show time on message
-  showMsgTime(String time){
+  showMsgTime(String time) {
     String t = ""; //this is time
     for (var i = 11; i < 16; i++) {
       t = t + time[i];
     }
     return t;
   }
+
+//seen all message
+  Future<void> seenMsg() async {
+    await FirebaseFirestore.instance
+        .collection("chatroom")
+        .where('sender', isEqualTo: widget.frienduid)
+        .where('receiver', isEqualTo: user!.uid)
+        .where('seen', isEqualTo: 'false')
+        .get()
+        .then((value) {
+      final List seendata = [];
+      value.docs.map((DocumentSnapshot document) {
+        Map a = document.data() as Map<String, dynamic>;
+        seendata.add(a);
+      }).toList();
+      setState(() {
+        for (var i = 0; i < seendata.length; i++) {
+          FirebaseFirestore.instance
+              .collection("chatroom")
+              .doc(seendata[i]['time'])
+              .update({'seen': 'true'});
+        }
+      });
+      // print(seendata);
+    });
+    // .update({'seen': 'true'});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    seenMsg();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,7 +255,10 @@ class _UserChatState extends State<UserChat> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 4, horizontal: 12),
-                          child: Text(snapshot.data['uname'].toString(),style: TextStyle(fontSize: 18),),
+                          child: Text(
+                            snapshot.data['uname'].toString(),
+                            style: TextStyle(fontSize: 18),
+                          ),
                         )),
                   );
                 }),
@@ -299,7 +338,8 @@ class _UserChatState extends State<UserChat> {
                                 chatdata.add(a);
                               }).toList();
                               // print(chatdata);
-                              currentDate="";//for new message appear it will maintain it self
+                              currentDate =
+                                  ""; //for new message appear it will maintain it self
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -330,36 +370,51 @@ class _UserChatState extends State<UserChat> {
                                                     : MainAxisAlignment.start,
                                                 children: [
                                                   Column(
-                                                    crossAxisAlignment: (chatdata[i]
-                                                            ['sender'] ==
-                                                        user!.uid.toString())
-                                                    ? CrossAxisAlignment.end
-                                                    : CrossAxisAlignment.start,
-                                                    
+                                                    crossAxisAlignment:
+                                                        (chatdata[i][
+                                                                    'sender'] ==
+                                                                user!.uid
+                                                                    .toString())
+                                                            ? CrossAxisAlignment
+                                                                .end
+                                                            : CrossAxisAlignment
+                                                                .start,
                                                     children: [
                                                       Container(
                                                         decoration: (chatdata[i]
-                                                                    ['sender'] ==
+                                                                    [
+                                                                    'sender'] ==
                                                                 user!.uid
                                                                     .toString())
                                                             ? userChatDec()
                                                             : friendChatDec(),
                                                         child: Padding(
                                                           padding:
-                                                              const EdgeInsets.all(
-                                                                  8.0),
+                                                              const EdgeInsets
+                                                                  .all(8.0),
                                                           child: Text(
                                                             chatdata[i]['msg'],
                                                             style: TextStyle(
-                                                                color:
-                                                                    Colors.white),
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         ),
                                                       ),
-                                                       Text(showMsgTime(chatdata[i]['time']),style: TextStyle(backgroundColor: Colors.white,color: Color.fromARGB(255, 158, 158, 158)))
+                                                      Text(
+                                                          showMsgTime(
+                                                              chatdata[i]
+                                                                  ['time']),
+                                                          style: TextStyle(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      158,
+                                                                      158,
+                                                                      158)))
                                                     ],
                                                   ),
-                                                  
                                                 ],
                                               ),
                                             ),

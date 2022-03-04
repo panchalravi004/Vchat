@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, avoid_print
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, avoid_print, unused_local_variable
 
 import 'dart:io';
 
@@ -216,6 +216,13 @@ class _ProfileState extends State<Profile> {
             Container(
               height: 300,
               decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 0),
+                        spreadRadius: 5,
+                        blurRadius: 5),
+                  ],
                   gradient: LinearGradient(colors: [
                     Color.fromARGB(255, 71, 110, 219),
                     Color.fromARGB(255, 116, 30, 185)
@@ -235,10 +242,10 @@ class _ProfileState extends State<Profile> {
                     decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black26,
+                              color: Colors.black12,
                               offset: Offset(0, 0),
-                              spreadRadius: 50,
-                              blurRadius: 70)
+                              spreadRadius: 30,
+                              blurRadius: 0)
                         ],
                         gradient: LinearGradient(
                             colors: [

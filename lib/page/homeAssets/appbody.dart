@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print, prefer_typing_uninitialized_variables, unused_local_variable
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print, prefer_typing_uninitialized_variables, unused_local_variable, sized_box_for_whitespace, prefer_is_empty
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +23,17 @@ class _MyAppBodyState extends State<MyAppBody> {
         .doc(user!.uid)
         .collection("friend")
         .orderBy('time', descending: true)
+        .snapshots();
+    return stream;
+  }
+
+  //for show unseen message count
+  Stream<QuerySnapshot<Object?>> unseenMsgStream(String friendUid) {
+    final Stream<QuerySnapshot> stream = FirebaseFirestore.instance
+        .collection("chatroom")
+        .where("sender", isEqualTo: friendUid)
+        .where("receiver", isEqualTo: user!.uid)
+        .where("seen", isEqualTo: 'false')
         .snapshots();
     return stream;
   }
@@ -148,53 +159,58 @@ class _MyAppBodyState extends State<MyAppBody> {
                                           blurRadius: 10)
                                     ]),
                                 child: ListTile(
-                                  onTap: () async {
-                                    // getData(maindata[i]['uid']);
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (context) {
-                                    //     return Center(
-                                    //       child: CircularProgressIndicator(),
-                                    //     );
-                                    //   },
-                                    // );
-                                    // await Future.delayed(Duration(seconds: 1));
-                                    // Navigator.of(context).pop();
-                                    setState(() {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => UserChat(
-                                                    frienduid: maindata[i]
-                                                            ['uid']
-                                                        .toString(),
-                                                  )));
-                                    });
-                                  },
-                                  leading: Container(
-                                    width: 55,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              offset: Offset(0, 0),
-                                              spreadRadius: 0,
-                                              blurRadius: 10)
-                                        ],
-                                        gradient: LinearGradient(
-                                            colors: [
-                                              Color.fromARGB(255, 61, 104, 212),
-                                              Color.fromRGBO(0, 204, 191, 1)
-                                            ],
-                                            begin: Alignment.bottomLeft,
-                                            end: Alignment.topRight),
-                                        color: Colors.amber,
-                                        border: Border.all(
-                                            color: Colors.white, width: 2),
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    child: StreamBuilder(
+                                    onTap: () async {
+                                      setState(() {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => UserChat(
+                                                      frienduid: maindata[i]
+                                                              ['uid']
+                                                          .toString(),
+                                                    )));
+                                      });
+                                    },
+                                    leading: Container(
+                                      width: 55,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black12,
+                                                offset: Offset(0, 0),
+                                                spreadRadius: 0,
+                                                blurRadius: 10)
+                                          ],
+                                          gradient: LinearGradient(
+                                              colors: [
+                                                Color.fromARGB(
+                                                    255, 61, 104, 212),
+                                                Color.fromRGBO(0, 204, 191, 1)
+                                              ],
+                                              begin: Alignment.bottomLeft,
+                                              end: Alignment.topRight),
+                                          color: Colors.amber,
+                                          border: Border.all(
+                                              color: Colors.white, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      child: StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(maindata[i]['uid'])
+                                            .snapshots(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return CircularProgressIndicator();
+                                          }
+                                          return setProfileImg(
+                                              snapshot.data['img'].toString());
+                                        },
+                                      ),
+                                    ),
+                                    title: StreamBuilder(
                                       stream: FirebaseFirestore.instance
                                           .collection('users')
                                           .doc(maindata[i]['uid'])
@@ -202,50 +218,94 @@ class _MyAppBodyState extends State<MyAppBody> {
                                       builder: (BuildContext context,
                                           AsyncSnapshot snapshot) {
                                         if (!snapshot.hasData) {
-                                          return CircularProgressIndicator();
+                                          return LinearProgressIndicator(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 230, 230, 230),
+                                          );
                                         }
-                                        return setProfileImg(
-                                            snapshot.data['img'].toString());
+                                        return Text((snapshot.data['uname']
+                                            .toString()));
                                       },
                                     ),
-                                  ),
-                                  title: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(maindata[i]['uid'])
-                                        .snapshots(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return LinearProgressIndicator(
-                                          backgroundColor: Color.fromARGB(
-                                              255, 230, 230, 230),
-                                        );
-                                      }
-                                      return Text(
-                                          (snapshot.data['uname'].toString()));
-                                    },
-                                  ),
-                                  subtitle: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(maindata[i]['uid'])
-                                        .snapshots(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return LinearProgressIndicator(
-                                          backgroundColor: Color.fromARGB(
-                                              255, 230, 230, 230),
-                                        );
-                                      }
-                                      return Text(setStatus(
-                                          snapshot.data['status'].toString()));
-                                    },
-                                  ),
-                                  trailing:
-                                      showTime(maindata[i]['time'].toString()),
-                                ),
+                                    subtitle: StreamBuilder(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(maindata[i]['uid'])
+                                          .snapshots(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return LinearProgressIndicator(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 230, 230, 230),
+                                          );
+                                        }
+                                        return Text(setStatus(snapshot
+                                            .data['status']
+                                            .toString()));
+                                      },
+                                    ),
+                                    trailing: Container(
+                                        width: 150,
+                                        color: Colors.transparent,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            showTime(
+                                                maindata[i]['time'].toString()),
+                                            StreamBuilder(
+                                                stream: unseenMsgStream(
+                                                    maindata[i]['uid']
+                                                        .toString()),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot snapshot) {
+                                                  if (snapshot.hasError) {
+                                                    print('something wrong');
+                                                  }
+                                                  final List seendata = [];
+                                                  if (snapshot.hasData) {
+                                                    snapshot.data!.docs.map(
+                                                        (DocumentSnapshot
+                                                            document) {
+                                                      Map a = document.data()
+                                                          as Map<String,
+                                                              dynamic>;
+                                                      seendata.add(a);
+                                                    }).toList();
+                                                    // print(seendata);
+                                                  }
+                                                  if (seendata.length > 0) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 8),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.green,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Text(
+                                                              seendata.length
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white)),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Text("");
+                                                  }
+                                                }),
+                                          ],
+                                        ))),
                               ),
                             )
                           ],
