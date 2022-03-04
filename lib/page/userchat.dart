@@ -224,6 +224,30 @@ class _UserChatState extends State<UserChat> {
     });
     // .update({'seen': 'true'});
   }
+//clear chat
+//delete user
+//menu
+  final RelativeRect position = RelativeRect.fromLTRB(1, 0, 0, 0);
+  Future<dynamic> showBox() {
+    return showMenu(context: context, position: position, items: [
+      PopupMenuItem<int>(
+          value: 0,
+          child: ListTile(
+            onTap: () {},
+            minLeadingWidth: 0,
+            trailing: Icon(CupertinoIcons.chat_bubble_text),
+            leading: Text("Clear"),
+          )),
+      PopupMenuItem<int>(
+          value: 1,
+          child: ListTile(
+            onTap: () {},
+            minLeadingWidth: 0,
+            trailing: Icon(Icons.delete),
+            leading: Text("Delete"),
+          )),
+    ]);
+  }
 
   @override
   void initState() {
@@ -238,57 +262,67 @@ class _UserChatState extends State<UserChat> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(11, 27, 51, 1),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            StreamBuilder(
-                stream: friendStream(widget.frienduid),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 36, 58, 92),
-                            borderRadius: BorderRadius.circular(35)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 12),
-                          child: Text(
-                            snapshot.data['uname'].toString(),
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        )),
-                  );
-                }),
-            Container(
-              width: 35,
-              height: 35,
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 0),
-                        spreadRadius: 0,
-                        blurRadius: 10)
-                  ],
-                  gradient: LinearGradient(colors: [
-                    Color.fromARGB(255, 61, 104, 212),
-                    Color.fromRGBO(0, 204, 191, 1)
-                  ], begin: Alignment.bottomLeft, end: Alignment.topRight),
-                  color: Colors.amber,
-                  border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(50)),
-              child: StreamBuilder(
-                  stream: friendStream(widget.frienduid),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    }
-                    return setProfileImg(snapshot.data['img'].toString());
-                  }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 35,
+                  height: 35,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(0, 0),
+                            spreadRadius: 0,
+                            blurRadius: 10)
+                      ],
+                      gradient: LinearGradient(colors: [
+                        Color.fromARGB(255, 61, 104, 212),
+                        Color.fromRGBO(0, 204, 191, 1)
+                      ], begin: Alignment.bottomLeft, end: Alignment.topRight),
+                      color: Colors.amber,
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: BorderRadius.circular(50)),
+                  child: StreamBuilder(
+                      stream: friendStream(widget.frienduid),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        }
+                        return setProfileImg(snapshot.data['img'].toString());
+                      }),
+                ),
+                StreamBuilder(
+                    stream: friendStream(widget.frienduid),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator();
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 36, 58, 92),
+                                borderRadius: BorderRadius.circular(35)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 12),
+                              child: Text(
+                                snapshot.data['uname'].toString(),
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            )),
+                      );
+                    }),
+              ],
             ),
+            InkWell(
+                onTap: () {
+                  showBox();
+                },
+                child: Icon(CupertinoIcons.bars))
           ],
         ),
       ),

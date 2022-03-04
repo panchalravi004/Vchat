@@ -203,91 +203,95 @@ class _AddFriendState extends State<AddFriend> {
           ),
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: StreamBuilder(
-                  stream: userStream(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasError) {
-                      print('something wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: SizedBox(
-                          height: 250,
-                          child: Center(
-                            child: CircularProgressIndicator(),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: StreamBuilder(
+                    stream: userStream(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasError) {
+                        print('something wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: SizedBox(
+                            height: 250,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                    final List data = [];
-                    snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map a = document.data() as Map<String, dynamic>;
-                      data.add(a);
-                    }).toList();
-                    // print(data);
-                    return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          for (var i = 0; i < data.length; i++) ...[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(25),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black12,
-                                          offset: Offset(0, 0),
-                                          spreadRadius: 0,
-                                          blurRadius: 10)
-                                    ]),
-                                child: ListTile(
-                                  leading: Container(
-                                      width: 55,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                              colors: [
-                                                Color.fromARGB(
-                                                    255, 61, 104, 212),
-                                                Color.fromRGBO(0, 204, 191, 1)
-                                              ],
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight),
-                                          color: Colors.amber,
-                                          borderRadius:
-                                              BorderRadius.circular(50)),
-                                      child: setProfileImg(
-                                          data[i]['img'].toString())),
-                                  title: Text(data[i]['uname']),
-                                  subtitle: Text(
-                                      setStatus(data[i]['status'].toString())),
-                                  trailing: FutureBuilder(
-                                      future: checkFriend(
-                                          data[i]['uid'].toString()),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot snapshot) {
-                                        if (snapshot.data == true) {
-                                          return Text("Already Friends !");
-                                        } else {
-                                          return InkWell(
-                                          onTap: () {
-                                            addFriend(
-                                                data[i]['email'].toString(),
-                                                data[i]['uid'].toString());
-                                          },
-                                          child: Icon(CupertinoIcons
-                                              .arrow_up_right_diamond_fill),
-                                        );
-                                        }
-                                      }),
+                        );
+                      }
+                      final List data = [];
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                        Map a = document.data() as Map<String, dynamic>;
+                        data.add(a);
+                      }).toList();
+                      // print(data);
+                      return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            for (var i = 0; i < data.length; i++) ...[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(25),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            offset: Offset(0, 0),
+                                            spreadRadius: 0,
+                                            blurRadius: 10)
+                                      ]),
+                                  child: ListTile(
+                                    leading: Container(
+                                        width: 55,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                colors: [
+                                                  Color.fromARGB(
+                                                      255, 61, 104, 212),
+                                                  Color.fromRGBO(0, 204, 191, 1)
+                                                ],
+                                                begin: Alignment.bottomLeft,
+                                                end: Alignment.topRight),
+                                            color: Colors.amber,
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        child: setProfileImg(
+                                            data[i]['img'].toString())),
+                                    title: Text(data[i]['uname']),
+                                    subtitle: Text(setStatus(
+                                        data[i]['status'].toString())),
+                                    trailing: FutureBuilder(
+                                        future: checkFriend(
+                                            data[i]['uid'].toString()),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.data == true) {
+                                            return Text("Already Friends !");
+                                          } else {
+                                            return InkWell(
+                                              onTap: () {
+                                                addFriend(
+                                                    data[i]['email'].toString(),
+                                                    data[i]['uid'].toString());
+                                              },
+                                              child: Icon(CupertinoIcons
+                                                  .arrow_up_right_diamond_fill),
+                                            );
+                                          }
+                                        }),
+                                  ),
                                 ),
-                              ),
-                            )
-                          ]
-                        ]);
-                  })),
+                              )
+                            ]
+                          ]);
+                    }),
+              )),
         ),
       ),
     );

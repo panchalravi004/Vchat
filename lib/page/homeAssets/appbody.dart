@@ -114,33 +114,33 @@ class _MyAppBodyState extends State<MyAppBody> {
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 150),
-          child: Column(
+          child: Stack(
             children: [
-              StreamBuilder(
-                  stream: currentuserStream(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasError) {
-                      print('something wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: SizedBox(
-                          height: 250,
-                          child: Center(
-                            child: CircularProgressIndicator(),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: StreamBuilder(
+                    stream: currentuserStream(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasError) {
+                        print('something wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: SizedBox(
+                            height: 250,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                    final List maindata = [];
-                    snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map a = document.data() as Map<String, dynamic>;
-                      maindata.add(a);
-                    }).toList();
-                    // print(maindata);
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
+                        );
+                      }
+                      final List maindata = [];
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                        Map a = document.data() as Map<String, dynamic>;
+                        maindata.add(a);
+                      }).toList();
+                      // print(maindata);
+                      return Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           for (var i = 0; i < maindata.length; i++) ...[
@@ -310,26 +310,25 @@ class _MyAppBodyState extends State<MyAppBody> {
                             )
                           ],
                         ],
-                      ),
-                    );
-                  }),
-              Expanded(
-                  child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: FloatingActionButton(
-                          hoverColor: Colors.amber,
-                          backgroundColor: Color.fromARGB(255, 74, 194, 78),
-                          splashColor: Color.fromARGB(255, 255, 136, 25),
-                          tooltip: 'Chats',
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(MyRoutes.addFriendroutes);
-                          },
-                          child: Icon(CupertinoIcons.chat_bubble_text_fill),
-                        ),
-                      )))
+                      );
+                    }),
+              ),
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton(
+                      hoverColor: Colors.amber,
+                      backgroundColor: Color.fromARGB(255, 74, 194, 78),
+                      splashColor: Color.fromARGB(255, 255, 136, 25),
+                      tooltip: 'Chats',
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(MyRoutes.addFriendroutes);
+                      },
+                      child: Icon(CupertinoIcons.chat_bubble_text_fill),
+                    ),
+                  ))
             ],
           ),
         ),
