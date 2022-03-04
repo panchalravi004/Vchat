@@ -400,19 +400,50 @@ class _UserChatState extends State<UserChat> {
                                                           ),
                                                         ),
                                                       ),
-                                                      Text(
-                                                          showMsgTime(
-                                                              chatdata[i]
-                                                                  ['time']),
-                                                          style: TextStyle(
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      158,
-                                                                      158,
-                                                                      158)))
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                              showMsgTime(
+                                                                  chatdata[i]
+                                                                      ['time']),
+                                                              style: TextStyle(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          158,
+                                                                          158,
+                                                                          158))),
+                                                          if (chatdata[i]
+                                                                  ['sender'] ==
+                                                              user!.uid) ...[
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              child: Icon(
+                                                                chatdata[i]['seen'] ==
+                                                                        "true"
+                                                                    ? Icons
+                                                                        .done_all
+                                                                    : Icons
+                                                                        .done,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        3,
+                                                                        175,
+                                                                        255),
+                                                                size: 16,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ],
+                                                      )
                                                     ],
                                                   ),
                                                 ],
