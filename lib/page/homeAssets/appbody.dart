@@ -159,6 +159,7 @@ class _MyAppBodyState extends State<MyAppBody> {
                                           blurRadius: 10)
                                     ]),
                                 child: ListTile(
+                                    // horizontalTitleGap: 0.0,
                                     onTap: () async {
                                       setState(() {
                                         Navigator.push(
@@ -246,14 +247,14 @@ class _MyAppBodyState extends State<MyAppBody> {
                                       },
                                     ),
                                     trailing: Container(
-                                        width: 150,
+                                        width: 145,
                                         color: Colors.transparent,
-                                        child: Row(
+                                        child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
-                                            showTime(
-                                                maindata[i]['time'].toString()),
                                             StreamBuilder(
                                                 stream: unseenMsgStream(
                                                     maindata[i]['uid']
@@ -276,34 +277,40 @@ class _MyAppBodyState extends State<MyAppBody> {
                                                     // print(seendata);
                                                   }
                                                   if (seendata.length > 0) {
-                                                    return Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 8),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.green,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(4.0),
-                                                          child: Text(
-                                                              seendata.length
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white)),
-                                                        ),
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Color.fromARGB(
+                                                              255, 75, 219, 80),
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    20),
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    20),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    20),
+                                                          )),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
+                                                        child: Text(
+                                                            seendata.length
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white)),
                                                       ),
                                                     );
                                                   } else {
                                                     return Text("");
                                                   }
                                                 }),
+                                            showTime(
+                                                maindata[i]['time'].toString()),
                                           ],
                                         ))),
                               ),

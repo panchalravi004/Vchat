@@ -265,13 +265,19 @@ class _UserChatState extends State<UserChat> {
     });
   }
 
-//delete user from our list
+//delete user from our list and also remove from friend list
   Future<void> deleteUser() async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .collection("friend")
         .doc(widget.frienduid)
+        .delete();
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.frienduid)
+        .collection("friend")
+        .doc(user!.uid)
         .delete();
     Navigator.of(context).pop();
     Navigator.of(context).pop();
